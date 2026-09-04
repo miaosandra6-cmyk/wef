@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Weekly Mood Journal</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f7f5f2;
+        color: #333;
+    }
+    header {
+        text-align: center;
+        padding: 45px 20px 25px;
+    }
+    h1 { margin-bottom: 10px; font-size: 40px; }
+    header p { color: #777; }
+    .container {
+        width: 92%;
+        max-width: 900px;
+        margin: auto;
+    }
+    .card {
+        background: white;
+        padding: 28px;
+        margin-bottom: 22px;
+        border-radius: 20px;
+        box-shadow: 0 4px 18px rgba(0,0,0,.06);
+    }
+    h2 { margin-top: 0; }
+    .day {
+        border: 1px solid #e5e2dd;
+        border-radius: 15px;
+        padding: 18px;
+        margin-bottom: 15px;
+    }
+    .day-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+    .day h3 { margin: 0; }
+    select, textarea {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 15px;
+        font-family: Arial, sans-serif;
+    }
+    select { width: 180px; background: white; }
+    textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+    button {
+        border: none;
+        border-radius: 22px;
+        padding: 12px 24px;
+        margin: 5px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+    .save { background: #333; color: white; }
+    .clear { background: #eee; }
+    .buttons { text-align: center; margin-top: 20px; }
+    .summary {
+        text-align: center;
+        background: #f7f5f2;
+        border-radius: 14px;
+        padding: 20px;
+    }
+    #average {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    #message { color: #666; }
+    .entry {
+        background: #fafafa;
+        border-left: 4px solid #bbb;
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+    }
+    .entry strong { display: block; margin-bottom: 6px; }
+    .entry p { margin: 0; line-height: 1.5; color: #666; }
+    @media (max-width: 600px) {
+        .day-top { flex-direction: column; align-items: stretch; }
+        select { width: 100%; }
+        h1 { font-size: 32px; }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>My Weekly Mood Journal 🌱</h1>
+    <p>Choose your mood and write a little about your day.</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>My Week</h2>
+
+        <div id="days"></div>
+
+        <div class="buttons">
+            <button class="save" onclick="saveWeek()">Save My Week</button>
+            <button class="clear" onclick="clearWeek()">Clear</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Weekly Summary</h2>
+        <div class="summary">
+            <div id="average">--</div>
+            <div id="message">Save your week to see your summary.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Mood Trend</h2>
+        <canvas id="moodChart"></canvas>
+    </div>
+
+    <div class="card">
+        <h2>My Journal</h2>
+        <div id="journalReview">
+            <p style="color:#777;">Your saved journal entries will appear here.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+const moods = [
+    { value: 5, label: "😄 Great" },
+    { value: 4, label: "🙂 Good" },
+    { value: 3, label: "😐 Okay" },
+    { value: 2, label: "🙁 Bad" },
+    { value: 1, label: "😢 Very Bad" }
+];
+
+let chart = null;
+
+function createDays() {
+    const container = document.getElementById("days");
+
+    days.forEach((day, index) => {
+        const key = day.toLowerCase();
+
+        const div = document.createElement("div");
+        div.className = "day";
+
+        let options = '<option value="0">Choose your mood</option>';
+        moods.forEach(mood => {
+            options += `<option value="${mood.value}">${mood.label}</option>`;
+        });
+
+        div.innerHTML = `
+            <div class="day-top">
+                <h3>${day}</h3>
+                <select id="${key}Mood">${options}</select>
+            </div>
+            <textarea id="${key}Journal"
+                placeholder="Write about your day..."></textarea>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function saveWeek() {
+    const data = days.map(day => {
+        const key = day.toLowerCase();
+        return {
+            mood: Number(document.getElementById(key + "Mood").value),
+            journal: document.getElementById(key + "Journal").value
+        };
+    });
+
+    localStorage.setItem("moodJournal", JSON.stringify(data));
+
+    updateSummary(data);
+    updateChart(data);
+    updateJournal(data);
+
+    alert("Your week has been saved! 🌱");
+}
+
+function updateSummary(data) {
+    const completed = data.filter(item => item.mood > 0);
+
+    if (completed.length === 0) {
+        document.getElementById("average").textContent = "--";
+        document.getElementById("message").textContent =
+            "Choose at least one mood.";
+        return;
+    }
+
+    const average =
+        completed.reduce((sum, item) => sum + item.mood, 0)
+        / completed.length;
+
+    document.getElementById("average").textContent =
+        "Average Mood: " + average.toFixed(1) + " / 5";
+
+    let message;
+
+    if (average >= 4.5) {
+        message = "You had an amazing week! 🌟";
+    } else if (average >= 3.5) {
+        message = "You had a pretty good week! ☀️";
+    } else if (average >= 2.5) {
+        message = "Your week had a mix of emotions. 🌿";
+    } else {
+        message = "This week seemed difficult. Take some time to rest and recharge. 💛";
+    }
+
+    document.getElementById("message").textContent = message;
+}
+
+function updateChart(data) {
+    const values = data.map(item =>
+        item.mood === 0 ? null : item.mood
+    );
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(document.getElementById("moodChart"), {
+        type: "line",
+        data: {
+            labels: days,
+            datasets: [{
+                label: "Mood",
+                data: values,
+                borderWidth: 3,
+                pointRadius: 6,
+                tension: 0.35
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    min: 1,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1,
+                        callback: value => {
+                            const emoji = {
+                                1: "😢",
+                                2: "🙁",
+                                3: "😐",
+                                4: "🙂",
+                                5: "😄"
+                            };
+                            return emoji[value];
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+function updateJournal(data) {
+    const review = document.getElementById("journalReview");
+    review.innerHTML = "";
+
+    let hasEntry = false;
+
+    data.forEach((item, index) => {
+        if (item.journal.trim() !== "") {
+            hasEntry = true;
+
+            const entry = document.createElement("div");
+            entry.className = "entry";
+
+            const title = document.createElement("strong");
+            title.textContent = days[index];
+
+            const text = document.createElement("p");
+            text.textContent = item.journal;
+
+            entry.appendChild(title);
+            entry.appendChild(text);
+            review.appendChild(entry);
+        }
+    });
+
+    if (!hasEntry) {
+        review.innerHTML =
+            '<p style="color:#777;">No journal entries yet.</p>';
+    }
+}
+
+function loadWeek() {
+    const saved = JSON.parse(localStorage.getItem("moodJournal"));
+
+    if (!saved) return;
+
+    saved.forEach((item, index) => {
+        const key = days[index].toLowerCase();
+
+        document.getElementById(key + "Mood").value = item.mood;
+        document.getElementById(key + "Journal").value = item.journal;
+    });
+
+    updateSummary(saved);
+    updateChart(saved);
+    updateJournal(saved);
+}
+
+function clearWeek() {
+    if (!confirm("Clear this week's mood and journal?")) return;
+
+    localStorage.removeItem("moodJournal");
+
+    days.forEach(day => {
+        const key = day.toLowerCase();
+        document.getElementById(key + "Mood").value = "0";
+        document.getElementById(key + "Journal").value = "";
+    });
+
+    document.getElementById("average").textContent = "--";
+    document.getElementById("message").textContent =
+        "Save your week to see your summary.";
+
+    document.getElementById("journalReview").innerHTML =
+        '<p style="color:#777;">Your saved journal entries will appear here.</p>';
+
+    if (chart) {
+        chart.destroy();
+        chart = null;
+    }
+}
+
+createDays();
+loadWeek();
+</script>
+
+</body>
+</html>
