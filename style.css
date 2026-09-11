@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
+
+:root {
+  --pink: #f6b6cf;
+  --light-pink: #fff0f6;
+  --dark: #171719;
+  --gray: #737176;
+  --light-gray: #f4f3f4;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fff;
+  color: var(--dark);
+  font-family: "DM Sans", sans-serif;
+  line-height: 1.6;
+}
+
+nav {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7%;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.logo {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--gray);
+  font-size: 14px;
+  transition: .2s;
+}
+
+.nav-links a:hover {
+  color: var(--dark);
+}
+
+.hero {
+  min-height: 680px;
+  padding: 90px 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 70px;
+  background: linear-gradient(135deg, #fff 0%, #fff7fa 100%);
+}
+
+.hero-text {
+  max-width: 650px;
+}
+
+.small-title, .section-label {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #a36b82;
+}
+
+.hero h1 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(65px, 10vw, 120px);
+  line-height: .95;
+  margin: 22px 0;
+  font-weight: 500;
+}
+
+.hero h1 span {
+  color: var(--pink);
+  font-style: italic;
+}
+
+.intro {
+  color: var(--gray);
+  font-size: 18px;
+  margin-bottom: 34px;
+}
+
+.button {
+  display: inline-block;
+  padding: 13px 22px;
+  border-radius: 30px;
+  background: var(--dark);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: transform .2s, background .2s;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  background: #333;
+}
+
+.hero-card {
+  width: 320px;
+  height: 390px;
+  background: var(--pink);
+  border-radius: 170px 170px 25px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(3deg);
+  box-shadow: 18px 18px 0 #222;
+}
+
+.hero-card .star {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.hero-card p {
+  font-family: "Playfair Display", serif;
+  font-size: 100px;
+  line-height: 1;
+}
+
+.hero-card span {
+  font-size: 15px;
+}
+
+.mini-hearts {
+  margin-top: 30px;
+  letter-spacing: 12px;
+  font-size: 20px;
+}
+
+.section {
+  padding: 110px 10%;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.section h2 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(42px, 6vw, 70px);
+  font-weight: 500;
+  margin: 12px 0 55px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.4fr .8fr;
+  gap: 70px;
+  align-items: center;
+}
+
+.about-text {
+  font-size: 19px;
+  color: #555258;
+  max-width: 700px;
+}
+
+.about-text p + p {
+  margin-top: 25px;
+}
+
+.quote-card {
+  padding: 42px;
+  background: var(--light-pink);
+  border-radius: 24px;
+}
+
+.quote-card > span {
+  font-size: 30px;
+}
+
+.quote-card h3 {
+  margin: 25px 0 10px;
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+}
+
+.quote-card p {
+  color: #6e5961;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.fav-card {
+  min-height: 260px;
+  padding: 32px;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform .25s;
+}
+
+.fav-card:hover {
+  transform: translateY(-6px);
+}
+
+.fav-card .icon {
+  font-size: 29px;
+}
+
+.fav-card h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 30px;
+  margin-top: 25px;
+}
+
+.fav-card p {
+  margin: 5px 0 18px;
+  color: #666;
+}
+
+.pink {
+  background: #ffdce9;
+}
+
+.dark {
+  background: #1d1d1f;
+  color: white;
+}
+
+.dark p, .dark .tag {
+  color: #c5c5c5;
+}
+
+.food {
+  background: #f1eddf;
+}
+
+.hotpot {
+  background: #eee;
+}
+
+.drama {
+  background: #e9e5e7;
+}
+
+.colors {
+  background: #f5f4f5;
+}
+
+.tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+}
+
+.color-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.color-dots i {
+  width: 34px;
+  height: 34px;
+  display: block;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+}
+
+.color-dots i:nth-child(1) { background: #f6b6cf; }
+.color-dots i:nth-child(2) { background: #171719; }
+.color-dots i:nth-child(3) { background: #777; }
+.color-dots i:nth-child(4) { background: white; }
+
+.life-section {
+  background: #fafafa;
+  max-width: none;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.life-list {
+  border-top: 1px solid #ddd;
+}
+
+.life-list > div {
+  display: grid;
+  grid-template-columns: 70px 1fr 1fr;
+  gap: 25px;
+  padding: 28px 0;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.life-list span {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.life-list strong {
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.life-list p {
+  color: #777;
+  font-size: 14px;
+}
+
+.final-note {
+  text-align: center;
+  padding: 140px 20px;
+}
+
+.big-heart {
+  font-size: 70px;
+  color: var(--pink);
+}
+
+.final-note h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 65px;
+  font-weight: 500;
+}
+
+.final-note p {
+  color: #777;
+  margin-top: 10px;
+}
+
+footer {
+  border-top: 1px solid #eee;
+  padding: 30px 7%;
+  display: flex;
+  justify-content: space-between;
+  color: #999;
+  font-size: 12px;
+}
+
+@media (max-width: 800px) {
+  nav {
+    padding: 0 6%;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .hero {
+    padding: 70px 7%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-card {
+    align-self: center;
+    width: 260px;
+    height: 320px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .life-list > div {
+    grid-template-columns: 45px 1fr;
+  }
+
+  .life-list p {
+    grid-column: 2;
+  }
+
+  footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
